@@ -1,4 +1,6 @@
 .*.json
+build
+.vscode
 
 # Prerequisites
 *.d

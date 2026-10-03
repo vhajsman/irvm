@@ -6,8 +6,8 @@
 namespace irvm {
     struct FileHeader;
 
-    constexpr uint16_t MAX_WIDTH = 255;
-    constexpr uint16_t MAX_HEIGHT = 255;
+    constexpr uint16_t MAX_WIDTH = UINT16_MAX;
+    constexpr uint16_t MAX_HEIGHT = UINT16_MAX;
     constexpr uint16_t MAX_PALETTE_SIZE = 24;
 
     //

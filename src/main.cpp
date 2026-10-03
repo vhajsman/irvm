@@ -5,6 +5,8 @@
 #include <boost/program_options.hpp>
 
 #include "params.hpp"
+#include "origin.hpp"
+#include "image.hpp"
 
 namespace {
     namespace po = boost::program_options;
@@ -155,6 +157,8 @@ namespace {
 }
 
 int main(int argc, char* argv[]) {
+    using namespace irvm;
+
     if(argc < 2) {
         std::cerr << "No command provided.\n" << "Use 'irvm --help' for usage information.\n";
         return 1;
@@ -198,8 +202,11 @@ int main(int argc, char* argv[]) {
         case IRVM_TOOL_COMMAND::CONVERT_TO_PNG:
             break;
 
-        case IRVM_TOOL_COMMAND::CONVERT_FROM_PNG:
+        case IRVM_TOOL_COMMAND::CONVERT_FROM_PNG: {
+            OriginImage image = load_origin_image(params.input_file.c_str());
+            std::cout << "Loaded PNG " << params.input_file << " (" << image.width << "x" << image.height << ")\n";
             break;
+        }
 
         case IRVM_TOOL_COMMAND::EXTRACT_PNG:
             break;

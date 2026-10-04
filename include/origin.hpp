@@ -32,12 +32,12 @@ namespace irvm {
         uint8_t b;
     };
 
-    struct Cluster {
+    struct ColorCluster {
         ClusterColor color;
         uint32_t count;
     };
 
-    std::vector<Cluster> cluster_image(const OriginImage& image, uint16_t max_clusters);
+    std::vector<ColorCluster> cluster_colors(const OriginImage& image, uint16_t cluster_count);
 };
 
 #endif // __IRVM_ORIGIN_HPP__

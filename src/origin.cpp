@@ -2,6 +2,7 @@
 #include "image.hpp"
 
 #include <cstdio>
+#include <iostream>
 #include <png.h>
 #include <stdexcept>
 
@@ -23,6 +24,8 @@ namespace irvm {
     };
 
     OriginImage load_origin_image(const char* filename) {
+        static_assert(sizeof(OriginPixel) == 3);
+
         PngFile png_file;
         png_file.file = fopen(filename, "rb");
         if(png_file.file == nullptr)
@@ -72,8 +75,20 @@ namespace irvm {
             png_set_expand_gray_1_2_4_to_8(png_file.png_ptr);
         if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
             png_set_gray_to_rgb(png_file.png_ptr);
+        
+        // Always strip alpha from the normalized representation.
+        png_set_strip_alpha(png_file.png_ptr);
 
         png_read_update_info(png_file.png_ptr, png_file.info_ptr);
+
+        {
+            const int channels = png_get_channels(png_file.png_ptr, png_file.info_ptr);
+            const int output_bit_depth = png_get_bit_depth(png_file.png_ptr, png_file.info_ptr);
+            const size_t rowbytes = png_get_rowbytes(png_file.png_ptr, png_file.info_ptr);
+            if(channels != 3 || output_bit_depth != 8 || rowbytes != width * 3) {
+                throw std::runtime_error("PNG normalization failed: expected 8-bit RGB output.");
+            }
+        }
 
         OriginImage image;
         image.width = width;
@@ -86,7 +101,22 @@ namespace irvm {
             rows[y] = reinterpret_cast<png_bytep>(image.pixels.data() + static_cast<size_t>(y) * width);
         }
 
+        const int channels = png_get_channels(png_file.png_ptr, png_file.info_ptr);
+        const size_t rowbytes = png_get_rowbytes(png_file.png_ptr, png_file.info_ptr);
+
+        std::cout << "PNG channels: " << channels << ", rowbytes: " << rowbytes << '\n';
+
         png_read_image(png_file.png_ptr, rows.data());
+
+        for (uint32_t y = 0; y < 8; ++y) {
+            for (uint32_t x = 0; x < 8; ++x) {
+                const OriginPixel& p = image.pixels[y * width + x];
+                std::cout << '(' << static_cast<int>(p.r) << ',' << static_cast<int>(p.g) << ',' << static_cast<int>(p.b) << ") ";
+            }
+
+            std::cout << '\n';
+        }
+
         png_read_end(png_file.png_ptr, nullptr);
 
         return image;

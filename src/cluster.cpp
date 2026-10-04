@@ -29,25 +29,35 @@ namespace irvm {
             uint64_t pixel_count;
         };
 
-        //
-        // Convert an sRGB component to linear RGB.
-        //
-        // PNG stores ordinary sRGB values. CIELAB conversion operates on
-        // linear-light RGB, so undo the sRGB transfer function first.
-        //
-        // The constants below are defined by the sRGB / IEC 61966-2-1
-        // transfer function.
-        //
+        /**
+         * @brief Convert an sRGB component to linear RGB.
+         *
+         * @param value sRGB
+         * @return double 
+         */
         double srgb_to_linear(uint8_t value) {
+            //
+            // PNG stores ordinary sRGB values. CIELAB conversion operates on
+            // linear-light RGB, so undo the sRGB transfer function first.
+            //
+            // The constants below are defined by the sRGB / IEC 61966-2-1
+            // transfer function.
+            //
+
             const double c = static_cast<double>(value) / 255.0;
             return (c <= 0.04045) ? (c / 12.92) : std::pow((c + 0.055) / 1.055, 2.4);
         }
 
-        //
-        // RGB -> CIELAB
-        //
-        // D65 white point.
-        //
+        /**
+         * @brief Converts RGB to CIELAB
+         *
+         * D65 white point
+         * 
+         * @param r 
+         * @param g 
+         * @param b 
+         * @return Lab 
+         */
         Lab rgb_to_lab(uint8_t r, uint8_t g, uint8_t b) {
             const double rr = srgb_to_linear(r);
             const double gg = srgb_to_linear(g);

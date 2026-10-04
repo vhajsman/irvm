@@ -2,6 +2,8 @@
 build
 .vscode
 
+docs/html
+
 # Prerequisites
 *.d
 

@@ -205,6 +205,19 @@ int main(int argc, char* argv[]) {
         case IRVM_TOOL_COMMAND::CONVERT_FROM_PNG: {
             OriginImage image = load_origin_image(params.input_file.c_str());
             std::cout << "Loaded PNG " << params.input_file << " (" << image.width << "x" << image.height << ")\n";
+
+            std::vector<ColorCluster> clusters = cluster_colors(image, 24);
+            for(const auto& cluster : clusters) {
+                std::cout
+                << "Cluster: RGB("
+                << static_cast<int>(cluster.color.r) << ", "
+                << static_cast<int>(cluster.color.g) << ", "
+                << static_cast<int>(cluster.color.b)
+                << ") Count: "
+                << cluster.count
+                << '\n';
+            }
+
             break;
         }
 

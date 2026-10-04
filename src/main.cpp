@@ -218,6 +218,9 @@ int main(int argc, char* argv[]) {
                 << '\n';
             }
 
+            Palette palette = build_palette(clusters);
+            (void) palette;
+
             break;
         }
 

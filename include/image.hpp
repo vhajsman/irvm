@@ -224,6 +224,13 @@ namespace irvm {
         std::vector<uint8_t> pixels;
     };
 
+    /**
+     * @brief Indexes an image with colors saved as singular bytes refering to color in a palette by index
+     * 
+     * @param origin original image
+     * @param palette palette
+     * @return IndexedImage 
+     */
     IndexedImage index_image(const OriginImage& origin, const Palette& palette); // indexed.cpp
 };
 

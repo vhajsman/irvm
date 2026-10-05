@@ -217,4 +217,14 @@ namespace irvm {
     };
 }
 
+namespace irvm {
+    struct IndexedImage {
+        uint16_t width;
+        uint16_t height;
+        std::vector<uint8_t> pixels;
+    };
+
+    IndexedImage index_image(const OriginImage& origin, const Palette& palette); // indexed.cpp
+};
+
 #endif // IRVM_IMAGE_HPP

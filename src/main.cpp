@@ -219,7 +219,7 @@ int main(int argc, char* argv[]) {
             }
 
             Palette palette = build_palette(clusters);
-            (void) palette;
+            IndexedImage indexed = index_image(image, palette);
 
             break;
         }

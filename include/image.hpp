@@ -77,6 +77,7 @@ namespace irvm {
         line_to,
         quadratic_bezier,
         close,
+        fill_path,
         fill_rect,
         stroke_rect,
         fill_triangle,

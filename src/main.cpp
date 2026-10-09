@@ -3,10 +3,12 @@
 #include <string>
 
 #include <boost/program_options.hpp>
+#include <vector>
 
 #include "params.hpp"
 #include "origin.hpp"
 #include "image.hpp"
+#include "region.hpp"
 
 namespace {
     namespace po = boost::program_options;
@@ -207,15 +209,28 @@ int main(int argc, char* argv[]) {
             std::cout << "Loaded PNG " << params.input_file << " (" << image.width << "x" << image.height << ")\n";
 
             std::vector<ColorCluster> clusters = cluster_colors(image, 24);
-            for(const auto& cluster : clusters) {
-                std::cout
-                << "Cluster: RGB("
-                << static_cast<int>(cluster.color.r) << ", "
-                << static_cast<int>(cluster.color.g) << ", "
-                << static_cast<int>(cluster.color.b)
-                << ") Count: "
-                << cluster.count
-                << '\n';
+
+            Palette palette = build_palette(clusters);
+            IndexedImage indexed = index_image(image, palette);
+
+            // std::vector<Region> regions = find_regions(indexed);
+
+            std::vector<RectUniformRegion> rectangles;
+
+            RectUniformRegion root {
+                {0, 0},
+                {
+                    static_cast<int16_t>(indexed.width),
+                    static_cast<int16_t>(indexed.height)
+                },
+                0
+            };
+
+            rect_partition(indexed, root, rectangles);
+            merge_adjacent_rects(rectangles);
+
+            for(const auto& rect: rectangles) {
+                std::cout << "x=" << rect.pos.x << ", y=" << rect.pos.y << ", w=" << rect.dimensions.x << ", h=" << rect.dimensions.y << ", color=" << std::to_string(rect.color) << std::endl;
             }
 
             break;

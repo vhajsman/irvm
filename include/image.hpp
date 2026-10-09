@@ -1,14 +1,16 @@
 #ifndef IRVM_IMAGE_HPP
 #define IRVM_IMAGE_HPP
 
+#include "origin.hpp"
 #include <cstdint>
+#include <vector>
 
 namespace irvm {
     struct FileHeader;
 
-    constexpr uint16_t MAX_WIDTH = UINT16_MAX;
-    constexpr uint16_t MAX_HEIGHT = UINT16_MAX;
-    constexpr uint16_t MAX_PALETTE_SIZE = 24;
+    constexpr uint16_t MAX_WIDTH = UINT16_MAX;  ///< Maximum image width
+    constexpr uint16_t MAX_HEIGHT = UINT16_MAX; ///< Maximum image height
+    constexpr uint16_t MAX_PALETTE_SIZE = 24;   ///< Maximum colors per palette
 
     //
     // Coordinates
@@ -30,9 +32,10 @@ namespace irvm {
         uint16_t y;
     };
 
-    //
-    // Vector coordinates are expressed in font/object units.
-    // These are not pixel coordinates.
+    /**
+     * @brief Vector coordinates are expressed in font/object units. These are not pixel coordinates.
+     * 
+     */
     struct VectorCoordinate {
         int16_t x;
         int16_t y;
@@ -54,6 +57,15 @@ namespace irvm {
         PaletteColor colors[MAX_PALETTE_SIZE];
     };
 
+    /**
+     * @brief Generate color palette from color clusters
+     * 
+     * @param clusters color clusters
+     * @param palette_size maximal size of palette that wont be exceeded
+     * @return Palette 
+     */
+    Palette build_palette(const std::vector<ColorCluster>& clusters, uint8_t palette_size = MAX_PALETTE_SIZE); // palette.cpp
+
     //
     // Renderer instructions
     // ---------------------
@@ -65,6 +77,7 @@ namespace irvm {
         line_to,
         quadratic_bezier,
         close,
+        fill_path,
         fill_rect,
         stroke_rect,
         fill_triangle,
@@ -204,5 +217,22 @@ namespace irvm {
         uint16_t object_count;
     };
 }
+
+namespace irvm {
+    struct IndexedImage {
+        uint16_t width;
+        uint16_t height;
+        std::vector<uint8_t> pixels;
+    };
+
+    /**
+     * @brief Indexes an image with colors saved as singular bytes refering to color in a palette by index
+     * 
+     * @param origin original image
+     * @param palette palette
+     * @return IndexedImage 
+     */
+    IndexedImage index_image(const OriginImage& origin, const Palette& palette); // indexed.cpp
+};
 
 #endif // IRVM_IMAGE_HPP

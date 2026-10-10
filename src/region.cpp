@@ -354,4 +354,22 @@ namespace irvm {
         rect_partition(indexed, first, out);
         rect_partition(indexed, second, out);
     }
+
+    void sort_rectangles(std::vector<RectUniformRegion>& rectangles, SortMode sort_mode) {
+        if(sort_mode == SortMode::position) {
+            std::sort(rectangles.begin(), rectangles.end(), [](const auto& a, const auto& b) {
+                if(a.pos.y != b.pos.y) return a.pos.y < b.pos.y;
+                if(a.pos.x != b.pos.x) return a.pos.x < b.pos.x;
+
+                return a.color < b.color;
+            });
+        } else {
+            std::sort(rectangles.begin(), rectangles.end(), [](const auto& a, const auto& b) {
+                if(a.color != b.color) return a.color < b.color;
+                if(a.pos.y != b.pos.y) return a.pos.y < b.pos.y;
+
+                return a.pos.x < b.pos.x;
+            });
+        }
+    }
 }

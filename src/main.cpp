@@ -229,6 +229,9 @@ int main(int argc, char* argv[]) {
             rect_partition(indexed, root, rectangles);
             merge_adjacent_rects(rectangles);
 
+            SortMode sort_mode = (rectangles.size() * 2 >= palette.size) ? SortMode::position : SortMode::color;
+            sort_rectangles(rectangles, sort_mode);
+
             for(const auto& rect: rectangles) {
                 std::cout << "x=" << rect.pos.x << ", y=" << rect.pos.y << ", w=" << rect.dimensions.x << ", h=" << rect.dimensions.y << ", color=" << std::to_string(rect.color) << std::endl;
             }

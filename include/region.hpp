@@ -88,6 +88,30 @@ namespace irvm {
      * @exception std::runtime_error
      */
     void rect_partition(const IndexedImage& indexed, const RectUniformRegion& rect, std::vector<RectUniformRegion>& out);
+
+    enum class SortMode {
+        position,
+        color
+    };
+
+    /**
+     * @brief 
+     * 
+     * @param rectangles 
+     * @param sort_mode 
+     */
+    void sort_rectangles(std::vector<RectUniformRegion>& rectangles, SortMode sort_mode);
+
+    /**
+     * @brief 
+     * 
+     * @param rectangle_count 
+     * @param palette_size 
+     * @return SortMode 
+     */
+    inline SortMode choose_sort_mode(size_t rectangle_count, size_t palette_size) {
+        return rectangle_count * 2 >= palette_size ? SortMode::position : SortMode::color;
+    }
 };
 
 #endif
